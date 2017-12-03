@@ -20,7 +20,12 @@ protocol Modal {
 extension Modal where Self:UIView{
     func show(animated:Bool){
         self.backgroundView.alpha = 0
-        UIApplication.shared.delegate?.window??.rootViewController?.view.addSubview(self)
+        if var topController = UIApplication.shared.delegate?.window??.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            topController.view.addSubview(self)
+        }
         if animated {
             UIView.animate(withDuration: 0.33, animations: {
                 self.backgroundView.alpha = 0.66
